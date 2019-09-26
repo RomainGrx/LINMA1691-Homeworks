@@ -51,10 +51,9 @@ def color_ones(A):
         
     Return an array of same dimension as A containing only ones
     """
-    
-    # TO COMPLETE
-    
-    return []
+    n = len(A)
+
+    return [[1]*n]*n
 
 def color_degree(A):
     """
@@ -115,7 +114,6 @@ if __name__ == "__main__":
         for j in range(n, 2*n):
             B.append([int(x) for x in lines[j]])
     # Compute answer
-    print(are_iso(A, B))
 
      
     are_iso, h = are_iso_with_colors(A, B, color_ones)
