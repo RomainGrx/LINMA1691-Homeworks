@@ -81,6 +81,24 @@ def color_k_neigh(A, k):
     return []
      
 
+def isom_color(A,B,h):
+    
+    rempli = True
+    for i in h:
+        if i==-1:
+            rempli = False
+            break
+        
+        
+    if rempli:
+        check1 = check_mapping2D(A,B,h)
+        check2 = check_mapping1D(color(A),color(B))
+        if(check1 && check2):
+            return True,h
+        
+        
+        
+        
 def are_iso_with_colors(A, B, color = color_ones):
     """
     Input :
@@ -91,10 +109,11 @@ def are_iso_with_colors(A, B, color = color_ones):
         - h describe an isomorphim such that h(A) = B if Ans = True, h = [] otherwise
     
     """
+    
+    n = len(A)
+    h = [-1]*n
 
-    # TO COMPLETE
-
-    return False, []
+    return isom_color(A,B,h)
 
 if __name__ == "__main__":
 
