@@ -63,9 +63,8 @@ def color_degree(A):
     Return an array containing the degrees of the nodes of A
     """
    
-    # TO COMPLETE
-   
-    return []
+
+    return [sum(A[i]) for i in range(len(A))]
 
 def color_k_neigh(A, k):
     """
@@ -142,3 +141,6 @@ if __name__ == "__main__":
                     print("Correct answer")
                 else:
                     print("Wrong answer: incorrect mapping")
+
+
+
