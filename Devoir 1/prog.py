@@ -18,12 +18,13 @@ def check_mapping(A, B, h):
     Return True if h(A) = B, False otherwise
     """
     n = len(h)
-    matrix = np.copy(A)
+    matrix = [x[:] for x in A]
+
     for i in range(n):
         for j in range(n):
             matrix[i][j] = B[h[i]][h[j]]
 
-    return (matrix==A).all()
+    return (matrix==A)
 
 def are_iso(A,B):
     """
@@ -35,7 +36,7 @@ def are_iso(A,B):
         - h an array describing an isomorphim such that h(A) = B
     """
     n = len(A)
-    arange = np.arange(n)
+    arange = range(n)
     h_possibilities = list(itertools.permutations(arange))
     for h in h_possibilities:
         if check_mapping(A, B, list(h)):
@@ -143,4 +144,3 @@ if __name__ == "__main__":
                     print("Correct answer")
                 else:
                     print("Wrong answer: incorrect mapping")
-
