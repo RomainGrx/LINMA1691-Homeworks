@@ -17,14 +17,17 @@ def check_mapping(A, B, h):
         - h an array describing an isomorphism mapping node i from A to node h[i] from B  
     Return True if h(A) = B, False otherwise
     """
-    n = len(h)
+    n = len(A)
     matrix = [x[:] for x in A]
 
     for i in range(n):
         for j in range(n):
-            matrix[i][j] = B[h[i]][h[j]]
+            val = B[h[i]][h[j]]
+            if (A[i][j] != val):
+                return False
+            matrix[i][j] = val
 
-    return (matrix==A)
+    return True
 
 def are_iso(A,B):
     """
@@ -53,7 +56,7 @@ def color_ones(A):
     """
     n = len(A)
 
-    return [[1]*n]*n
+    return [1]*n
 
 def color_degree(A):
     """
@@ -118,7 +121,7 @@ def are_iso_with_colors(A, B, color = color_ones):
 if __name__ == "__main__":
 
     # Read Input
-    
+
     with open('in1.csv', 'r') as fd:
         lines = list(csv.reader(fd, delimiter=','))
         n = int(len(lines)/2)
@@ -133,7 +136,8 @@ if __name__ == "__main__":
             B.append([int(x) for x in lines[j]])
     # Compute answer
 
-     
+    print(are_iso(A, B))
+
     are_iso, h = are_iso_with_colors(A, B, color_ones)
 
 
@@ -160,6 +164,5 @@ if __name__ == "__main__":
                     print("Correct answer")
                 else:
                     print("Wrong answer: incorrect mapping")
-
 
 
