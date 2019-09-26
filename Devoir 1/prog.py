@@ -10,7 +10,16 @@ import csv
 import numpy as np
 import networkx
 
-def check_mapping(A, B, h):
+
+def check_mapping1D(colorA, colorB, h):
+    for i in range(len(colorA)):
+        if colorA[i] != colorB[h[i]]:
+            return False
+    return True    
+    
+
+
+def check_mapping2D(A, B, h):
     """
     Input :
         - A, B two adjacency matrices (arrays of arrays) with same dimensions
@@ -84,7 +93,7 @@ def color_k_neigh(A, k):
     return []
      
 
-def isom_color(A,B,h):
+def isom_color(A,B,h,color):
     
     rempli = True
     for i in h:
@@ -96,11 +105,12 @@ def isom_color(A,B,h):
     if rempli:
         check1 = check_mapping2D(A,B,h)
         check2 = check_mapping1D(color(A),color(B))
-        if(check1 && check2):
+        if(check1 and check2):
             return True,h
+        return False,[]
         
-        
-        
+     else:
+         
         
 def are_iso_with_colors(A, B, color = color_ones):
     """
@@ -116,7 +126,7 @@ def are_iso_with_colors(A, B, color = color_ones):
     n = len(A)
     h = [-1]*n
 
-    return isom_color(A,B,h)
+    return isom_color(A,B,h,color)
 
 if __name__ == "__main__":
 
