@@ -94,7 +94,7 @@ def color_k_neigh(A, k):
             
     return []
      
-def checkpresence(h,k): # regarder le cas v' appartient à Im(h)
+def checkpresence(h,k):    # regarder le cas v' appartient à Im(h)
     presence=False
     for i in h:
         if i==k:
@@ -104,7 +104,7 @@ def checkpresence(h,k): # regarder le cas v' appartient à Im(h)
 
 def isom_color(A,B,h,color):
     
-    rempli = True
+    rempli = True             # on regarde si le vecteur h est déjà rempli ou s'il faut encore le remplir
     for i in h:
         if i==-1:
             rempli = False
@@ -115,29 +115,28 @@ def isom_color(A,B,h,color):
     
     n = len(couleurA)
     
-    if rempli:
+    if rempli:          # si le vecteur h est rempli faut alors tester si la combinaison de noeuds est isomorphique ou non 
         check1 = check_mapping2D(A,B,h)
-      #  print(check1)
         check2 = check_mapping1D(couleurA,couleurB,h)
-      #  print(check2)
-        if(check1 and check2):
+        if(check1 and check2):    # le vecteur h représente un isomorphisme
             return True,h
-        return False,[]
+        return False,[]           # le vecteur h ne représente pas un isomorphisme
         
-    else:
-        for j in range(n):
+    
+    else:                         # on rajoute une paire à h, la paire est valide si les noeuds on la même couleur
+        for j in range(n):     
             for k in range(n):
                 if(couleurA[j]==couleurB[k]): #on a une paire valide selon les color (d'office valide si color_ones)
                    # print(j,k)
                    # print(h)
-                    if(h[j]==-1 and not checkpresence(h,k)): 
-                        hprime = h[:]
+                    if(h[j]==-1 and not checkpresence(h,k)):    # si aucun des noeud de la paire ne faisait partie du vecteur h
+                        hprime = h[:]                           # alors on peut rajouter la paire dans un nouveau vecteur hprime
                         hprime[j] = k
-                        iso, d = isom_color(A,B,hprime,color)
+                        iso, d = isom_color(A,B,hprime,color)   # on effectue la récursion avec le nouveau vecteur h     
                         if iso:
                             return True,d
                         
-        return False,[]               
+        return False,[]                                         # on a essayé toutes les combinaisons de noeuds et ce n'est pas iso.
             
          
          
