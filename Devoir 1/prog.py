@@ -133,8 +133,9 @@ def isom_color(A,B,h,color):
                         print("ici")
                         h[j]=k
                         print(h)
-                        return isom_color(A,B,h,color)
-                    
+                        if isom_color(A,B,h,color):
+                            return True,h
+    return False,[]               
             
          
          
