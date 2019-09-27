@@ -12,6 +12,7 @@ import networkx
 
 
 def check_mapping1D(colorA, colorB, h):
+    
     for i in range(len(colorA)):
         if colorA[i] != colorB[h[i]]:
             return False
@@ -50,8 +51,9 @@ def are_iso(A,B):
     n = len(A)
     arange = range(n)
     h_possibilities = list(itertools.permutations(arange))
+    
     for h in h_possibilities:
-        if check_mapping(A, B, list(h)):
+        if check_mapping2D(A, B, list(h)):
             return True,list(h)
 
     return False, []
@@ -92,6 +94,13 @@ def color_k_neigh(A, k):
             
     return []
      
+def checkpresence(h,k): # regarder le cas v' appartient à Im(h)
+    presence=False
+    for i in h:
+        if i==k:
+            presence=True
+    return presence
+
 
 def isom_color(A,B,h,color):
     
@@ -100,16 +109,34 @@ def isom_color(A,B,h,color):
         if i==-1:
             rempli = False
             break
-        
-        
+    
+    couleurA = color(A)    
+    couleurB = color(B)  
+    
+    n = len(couleurA)
+    
     if rempli:
         check1 = check_mapping2D(A,B,h)
-        check2 = check_mapping1D(color(A),color(B))
+        print(check1)
+        check2 = check_mapping1D(couleurA,couleurB,h)
+        print(check2)
         if(check1 and check2):
             return True,h
         return False,[]
         
-     else:
+    else:
+        for j in range(n):
+            for k in range(n):
+                if(couleurA[j]==couleurB[k]): #on a une paire valide selon les color (d'office valide si color_ones)
+                    print(j,k)
+                    if(h[j]==-1 and not checkpresence(h,k)): 
+                        print("ici")
+                        h[j]=k
+                        print(h)
+                        return isom_color(A,B,h,color)
+                    
+            
+         
          
         
 def are_iso_with_colors(A, B, color = color_ones):
@@ -170,7 +197,7 @@ if __name__ == "__main__":
                 print("Wrong answer: A and B are not isomorphic")
         else:
             if are_iso:
-                if check_mapping(A, B, h):
+                if check_mapping2D(A, B, h):
                     print("Correct answer")
                 else:
                     print("Wrong answer: incorrect mapping")
