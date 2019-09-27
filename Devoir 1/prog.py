@@ -117,9 +117,9 @@ def isom_color(A,B,h,color):
     
     if rempli:
         check1 = check_mapping2D(A,B,h)
-        print(check1)
+      #  print(check1)
         check2 = check_mapping1D(couleurA,couleurB,h)
-        print(check2)
+      #  print(check2)
         if(check1 and check2):
             return True,h
         return False,[]
@@ -128,14 +128,16 @@ def isom_color(A,B,h,color):
         for j in range(n):
             for k in range(n):
                 if(couleurA[j]==couleurB[k]): #on a une paire valide selon les color (d'office valide si color_ones)
-                    print(j,k)
+                   # print(j,k)
+                   # print(h)
                     if(h[j]==-1 and not checkpresence(h,k)): 
-                        print("ici")
-                        h[j]=k
-                        print(h)
-                        if isom_color(A,B,h,color):
-                            return True,h
-    return False,[]               
+                        hprime = h[:]
+                        hprime[j] = k
+                        iso, d = isom_color(A,B,hprime,color)
+                        if iso:
+                            return True,d
+                        
+        return False,[]               
             
          
          
@@ -179,10 +181,9 @@ if __name__ == "__main__":
     are_iso, h = are_iso_with_colors(A, B, color_ones)
 
 
-
     # print(check_mapping(A,B,h))
 
-    #are_iso, h = are_iso_with_colors(A, B, color_degree)
+  #  are_iso, h = are_iso_with_colors(A, B, color_degree)
     #are_iso, h = are_iso_with_colors(A, B, lambda x : color_k_neigh(x, 2))
      
     # Check results
