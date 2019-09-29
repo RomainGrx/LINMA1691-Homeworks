@@ -84,10 +84,29 @@ def color_k_neigh(A, k):
     Return an array containing the colors as defined in Q4 of the project statement
     The colors have to be structured as a sorted tuple of pairs (k, deg(v)) 
     """
-
-    # TO COMPLETE
-            
-    return []
+    
+    def calcul(nbase,noeud,w,k):
+        if w==0:
+            # print("up")
+            ar[nbase].append((k,degrees[noeud]))
+        else:
+            for l in range(len(A)):
+                    # print("ici")
+                    #  print(A[l])
+                if(A[noeud][l]==1):
+                        #     print("ici")
+                    calcul(nbase,l,w-1,k)
+                
+    
+    degrees = color_degree(A)  # on récupère les degrés de chaque noeud     
+    ar = []
+    
+    for i in range(len(A)):            # on parcourt chaque ligne
+        ar.append([])
+        for j in range(k+1):           # on test tous les k 
+            calcul(i,i,j,j)
+    
+    return ar
 
         
 def are_iso_with_colors(A, B, color = color_ones):
@@ -179,13 +198,13 @@ if __name__ == "__main__":
 
     print(are_iso(A, B))
 
-    are_iso, h = are_iso_with_colors(A, B, color_ones)
+   # are_iso, h = are_iso_with_colors(A, B, color_ones)
 
 
     # print(check_mapping(A,B,h))
 
   #  are_iso, h = are_iso_with_colors(A, B, color_degree)
-    #are_iso, h = are_iso_with_colors(A, B, lambda x : color_k_neigh(x, 2))
+    are_iso, h = are_iso_with_colors(A, B, lambda x : color_k_neigh(x, 2))
      
     # Check results
 
