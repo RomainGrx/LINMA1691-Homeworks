@@ -19,14 +19,14 @@ def check_mapping(A, B, h):
     Return True if h(A) = B, False otherwise
     """
     n = len(A)
-    matrix = [x[:] for x in A]
+  #  matrix = [x[:] for x in A]
 
     for i in range(n):
         for j in range(n):
             val = B[h[i]][h[j]]
             if (A[i][j] != val):
                 return False
-            matrix[i][j] = val
+       #     matrix[i][j] = val
 
     return True
 
@@ -85,28 +85,38 @@ def color_k_neigh(A, k):
     The colors have to be structured as a sorted tuple of pairs (k, deg(v)) 
     """
     
-    def calcul(nbase,noeud,w,k):
-        if w==0:
-            # print("up")
-            ar[nbase].append((k,degrees[noeud]))
-        else:
-            for l in range(len(A)):
-                    # print("ici")
-                    #  print(A[l])
-                if(A[noeud][l]==1):
-                        #     print("ici")
-                    calcul(nbase,l,w-1,k)
-                
-    
-    degrees = color_degree(A)  # on récupère les degrés de chaque noeud     
+    degrees = [sum(A[i]) for i in range(len(A))]
     ar = []
+
+    n = len(A)  
+    Nodes = [[0]*n]*n
     
-    for i in range(len(A)):            # on parcourt chaque ligne
+    for i in range(n):
         ar.append([])
-        for j in range(k+1):           # on test tous les k 
-            calcul(i,i,j,j)
+        for j in range(k+1):
+            Nodesprime = Nodes[i][:]
+            if j==0:
+                Nodesprime[i]=1
+            else:
+                for m in range(n): 
+                    if(Nodes[i][m]==1):
+                        for p in range(n):
+                            if(A[m][p]==1):
+                                Nodesprime[p]=1
+
+            Nodes[i] = Nodesprime
+        
+            for o in range(n):
+                if(Nodes[i][o]==1):
+                    ar[i].append((j,degrees[o]))
+                            
+
+
+    rep = [];
+    for i in range(len(ar)):
+        rep.append(tuple(sorted(ar[i])))
     
-    return ar
+    return rep    
 
         
 def are_iso_with_colors(A, B, color = color_ones):
@@ -119,64 +129,40 @@ def are_iso_with_colors(A, B, color = color_ones):
         - h describe an isomorphim such that h(A) = B if Ans = True, h = [] otherwise
     
     """
-    def isom_color(A,B,h,color):
+    colA = color(A)    
+    colB = color(B)  
     
-        def checkpresence(h,k):    # regarder le cas v' appartient à Im(h)
-            presence=False
-            for i in h:
-                if i==k:
-                    presence=True
-                    return presence
-    
-        def check_mapping1D(colorA, colorB, h):
-            for i in range(len(colorA)):
-                if colorA[i] != colorB[h[i]]:
-                    return False
-                return True   
+    def isom_color(A,B,h,colA,colB):
+        
+        n = len(A)
     
     
-    
-    
-        rempli = True             # on regarde si le vecteur h est déjà rempli ou s'il faut encore le remplir
-        for i in h:
-            if i==-1:
-                rempli = False
-                break
-    
-        couleurA = color(A)    
-        couleurB = color(B)  
-    
-        n = len(couleurA)
-    
-        if rempli:          # si le vecteur h est rempli faut alors tester si la combinaison de noeuds est isomorphique ou non 
+        if -1 not in h:          # si le vecteur h est rempli faut alors tester si la combinaison de noeuds est isomorphique ou non 
             check1 = check_mapping(A,B,h)
-            check2 = check_mapping1D(couleurA,couleurB,h)
-            if(check1 and check2):    # le vecteur h représente un isomorphisme
+        #    check2 = check_mapping1D(couleurA,couleurB,h)
+            if(check1):# and check2):    # le vecteur h représente un isomorphisme
                 return True,h
             return False,[]           # le vecteur h ne représente pas un isomorphisme
         
     
         else:                         # on rajoute une paire à h, la paire est valide si les noeuds on la même couleur
-            for j in range(n):     
-                for k in range(n):
-                    if(couleurA[j]==couleurB[k]): #on a une paire valide selon les color (d'office valide si color_ones)
-                        # print(j,k)
-                        # print(h)
-                        if(h[j]==-1 and not checkpresence(h,k)):    # si aucun des noeud de la paire ne faisait partie du vecteur h
+            for j in range(n):
+                if(h[j]==-1):
+                    for k in range(n):
+                        if(k not in h and colA[j]==colB[k]): #on a une paire valide selon les color (d'office valide si color_ones)
                             hprime = h[:]                           # alors on peut rajouter la paire dans un nouveau vecteur hprime
                             hprime[j] = k
-                            iso, d = isom_color(A,B,hprime,color)   # on effectue la récursion avec le nouveau vecteur h     
+                            iso, d = isom_color(A,B,hprime,colA,colB)   # on effectue la récursion avec le nouveau vecteur h
+                       #     print("ici")
                             if iso:
                                 return True,d
                             
             return False,[]                                         # on a essayé toutes les combinaisons de noeuds et ce n'est pas iso.
     
-    n = len(A)
     h = [-1]*n
     
-    
+    return isom_color(A,B,h,colA,colB)
 
-    return isom_color(A,B,h,color)
 
 if __name__ == "__main__":
 
@@ -203,8 +189,8 @@ if __name__ == "__main__":
 
     # print(check_mapping(A,B,h))
 
-  #  are_iso, h = are_iso_with_colors(A, B, color_degree)
-    are_iso, h = are_iso_with_colors(A, B, lambda x : color_k_neigh(x, 2))
+    are_iso, h = are_iso_with_colors(A, B, color_degree)
+   # are_iso, h = are_iso_with_colors(A, B, lambda x : color_k_neigh(x,2))
      
     # Check results
 
