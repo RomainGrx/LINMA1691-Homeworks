@@ -80,6 +80,7 @@ def color_degree(A):
     return deg
 
 
+
 def color_k_neigh(A, k):
     """
     Input :
@@ -134,39 +135,32 @@ def are_iso_with_colors(A, B, color = color_ones):
         - h describe an isomorphim such that h(A) = B if Ans = True, h = [] otherwise
     
     """
-    colA = color(A)    
-    colB = color(B)  
-    
-    def isom_color(A,B,h,colA,colB):
+    colA = color(A)
+    colB = color(B)
         
-        n = len(A)
+    def isom_color(A,B,h,count): 
     
-    
-        if -1 not in h:          # si le vecteur h est rempli faut alors tester si la combinaison de noeuds est isomorphique ou non 
-            check1 = check_mapping(A,B,h)
-        #    check2 = check_mapping1D(couleurA,couleurB,h)
-            if(check1):# and check2):    # le vecteur h représente un isomorphisme
-                return True,h
-            return False,[]           # le vecteur h ne représente pas un isomorphisme
+        if (count==n and check_mapping(A,B,h)):       
+            return True      
         
-    
-        else:                         # on rajoute une paire à h, la paire est valide si les noeuds on la même couleur
-            for j in range(n):
-                if(h[j]==-1):
-                    for k in range(n):
-                        if(k not in h and colA[j]==colB[k]): #on a une paire valide selon les color (d'office valide si color_ones)
-                            hprime = h[:]                           # alors on peut rajouter la paire dans un nouveau vecteur hprime
-                            hprime[j] = k
-                            iso, d = isom_color(A,B,hprime,colA,colB)   # on effectue la récursion avec le nouveau vecteur h
-                       #     print("ici")
-                            if iso:
-                                return True,d
+        else:  
+            for j in range(count,n):
+                for k in range(n):
+                    if(k not in h):
+                        if(colA[j]==colB[k]):
+                            h[j] = k
+                            count+=1
+                            if isom_color(A,B,h,count):
+                                return True
+                            h[j] = -2
+                            count-=1
                             
-            return False,[]                                         # on a essayé toutes les combinaisons de noeuds et ce n'est pas iso.
+                return False
     
-    h = [-1]*n
+    n = len(A)
+    h = [-2]*n
     
-    return isom_color(A,B,h,colA,colB)
+    return isom_color(A,B,h,0),h
 
 
 if __name__ == "__main__":
@@ -187,29 +181,30 @@ if __name__ == "__main__":
             B.append([int(x) for x in lines[j]])
     # Compute answer
 
-    print(are_iso(A, B))
 
    # are_iso, h = are_iso_with_colors(A, B, color_ones)
 
 
     # print(check_mapping(A,B,h))
 
-    are_iso, h = are_iso_with_colors(A, B, color_degree)
-   # are_iso, h = are_iso_with_colors(A, B, lambda x : color_k_neigh(x,2))
-     
+    # bool_iso, h = are_iso_with_colors(A, B, color_degree)
+    bool_iso, h = are_iso_with_colors(A, B, lambda x : color_k_neigh(x,2))
+    print('ARE ISO :', bool_iso)
+    print('H : \t', h)
+
     # Check results
 
     with open('out1.csv', 'r') as fd:
         lines = csv.reader(fd, delimiter=',')
         true_answer = int(next(lines)[0])
         
-        if are_iso != true_answer:
+        if bool_iso != true_answer:
             if true_answer:
                 print("Wrong answer: A and B are isomorphic")
             else:
                 print("Wrong answer: A and B are not isomorphic")
         else:
-            if are_iso:
+            if bool_iso:
                 if check_mapping(A, B, h):
                     print("Correct answer")
                 else:
