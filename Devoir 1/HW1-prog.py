@@ -70,9 +70,14 @@ def color_degree(A):
     
     Return an array containing the degrees of the nodes of A
     """
+    n = len(A)
+    deg = [sum(A[i]) for i in range(n)]
+    for i in range(n):
+        if A[i][i]:
+            deg[i] += 1
    
 
-    return [sum(A[i]) for i in range(len(A))]
+    return deg
 
 
 def color_k_neigh(A, k):
