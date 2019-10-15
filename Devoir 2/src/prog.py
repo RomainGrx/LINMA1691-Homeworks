@@ -9,7 +9,7 @@ import queue as Q
 from collections import deque
 
 LAB_TEST   = True
-SPORT_TEST = False
+SPORT_TEST = True
 
 LAB_NUMBER   = 2
 SPORT_NUMBER = 1
@@ -26,12 +26,12 @@ WALL, PATH, START, END = '#', ".", "E", "S"
 
 
 def shortest_path_1(maze):
-    """ 
-    INPUT : 
-        - maze, a 2D array representing the maze    
+    """
+    INPUT :
+        - maze, a 2D array representing the maze
     OUTPUT :
         - return the minimal number of steps required to go to the exit of the maze.
-        
+
         See project statement for more details
     """
 
@@ -51,8 +51,8 @@ def shortest_path_1(maze):
     if(Start == None):
         return -1
 
-    possibilities = deque([(*Start, 0)]) # Liste les possibilités autour de chaques cases à tester avec leur longueur de chemin déjà parcouru 
-    seen = {Start} # Liste toutes les cases où nous sommes déjà passés
+    possibilities = deque([(*Start, 0)]) # Liste les possibilitï¿½s autour de chaques cases ï¿½ tester avec leur longueur de chemin dï¿½jï¿½ parcouru
+    seen = {Start} # Liste toutes les cases oï¿½ nous sommes dï¿½jï¿½ passï¿½s
 
 
 
@@ -60,7 +60,7 @@ def shortest_path_1(maze):
         x, y, length = possibilities.popleft()
         box = maze[x][y]
 
-        # Liste toutes les possibilités où il n'y pas d'issues et reviens sur la boucle sans suite puisqu'il n'y a pas de chemins 
+        # Liste toutes les possibilitï¿½s oï¿½ il n'y pas d'issues et reviens sur la boucle sans suite puisqu'il n'y a pas de chemins
         if(box == WALL):
             continue
 
@@ -86,18 +86,57 @@ def shortest_path_1(maze):
     return -1
 
 def shortest_path_2(tasks, paths):
-    """ 
-    INPUT : 
+    """
+    INPUT :
         - tasks, the time to achieve each task (in minutes)
         - paths, list of tuples (a, b, t) giving a trail between tasks a and b.
           You need t minutes to walk this trail.
     OUTPUT :
         - return the time you need to finish the game
-          
+
         See project statement for more details
     """
+    n = len(tasks)
 
-    return -1
+    neweight = []
+    for i in paths:
+        neweight.append((i[0],i[1],tasks[i[1]-1] + i[2]))
+
+    visited = {1: 0}
+    noeudres = [i+1 for i in range(1,n)]
+    running = 1
+
+    while noeudres:
+
+        # mettre Ã  jour les moyens d'accÃ©der Ã  un noeud depuis running si plus court
+        for i in neweight:
+            if i[0]==running:
+                if i[1] in visited:
+                    if visited[i[1]] > (i[2]+visited[running]):
+                        visited[i[1]] = i[2]+visited[running]
+                else:
+                    visited[i[1]] = i[2]+visited[running]
+
+
+        mini = -2
+        for j in noeudres:
+            if j in visited:
+                if mini==-2:
+                    mini = visited[j]
+                    running = j
+                else:
+                    if mini>visited[j]:
+                        mini=visited[j]
+                        running = j
+
+        if mini==-2:
+            return(visited[n] + tasks[0])
+
+        print(noeudres)
+        if running in noeudres:
+            noeudres.remove(running)
+
+    return visited[n] + tasks[0]
 
 
 if __name__ == "__main__":
@@ -105,31 +144,31 @@ if __name__ == "__main__":
     if LAB_TEST:
 
         # Read Input for the first exercice
-        
+
         with open(LAB_IN_FILE, 'r') as fd:
             l = fd.readline()
             l = l.split(' ')
-            
+
             n = int(l[0])
             m = int(l[1])
-            
+
             maze = []
             for row in range(n):
                 l = fd.readline().rstrip()
                 maze.append(list(l))
-    
-        
-                
+
+
+
         # Compute answer for the first exercice
-         
+
         ans1 = shortest_path_1(maze)
-         
+
         # Check results for the first exercice
-    
+
         with open(LAB_OUT_FILE, 'r') as fd:
             l_output = fd.readline()
             expected_output = int(l_output)
-            
+
             if expected_output == ans1:
                 print("Exercice 1 : Correct")
             else:
@@ -138,38 +177,34 @@ if __name__ == "__main__":
 
 
     if SPORT_TEST:
-        
+
         # Read Input for the second exercice
-        
+
         with open(SPORT_IN_FILE, 'r') as fd:
             l = fd.readline().split(' ')
-            
+
             n = int(l[0])
             m = int(l[1])
-            
+
             tasks = [int(x) for x in fd.readline().rstrip().split(' ')]
-            
+
             paths = []
             for p in range(n):
                 l = fd.readline().rstrip().split(' ')
                 paths.append(tuple([int(x) for x in l]))
-                
+
         # Compute answer for the second exercice
-         
+
         ans2 = shortest_path_2(tasks, paths)
-         
+
         # Check results for the second exercice
-    
+
         with open(SPORT_OUT_FILE, 'r') as fd:
             l_output = fd.readline()
             expected_output = int(l_output)
-            
+
             if expected_output == ans2:
                 print("Exercice 2 : Correct")
             else:
                 print("Exercice 2 : Wrong answer")
-                print("Your output : %d ; Correct answer : %d" % (ans2, expected_output)) 
-
-            
-
-        
+                print("Your output : %d ; Correct answer : %d" % (ans2, expected_output))

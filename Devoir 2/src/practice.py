@@ -48,7 +48,7 @@ def shortest_path_1(maze):
 
     while possibilities:
         x, y, length = possibilities.popleft()
-        box = maze[x][y]
+        box = maze[y][x]
 
         # Liste toutes les possibilités où il n'y pas d'issues et reviens sur la boucle sans suite puisqu'il n'y a pas de chemins 
         if(box == WALL):
@@ -57,19 +57,13 @@ def shortest_path_1(maze):
         if(box == END):
             return length
 
-
+        if(((x, y) in seen) and ((x, y) != Start)):
+            continue
 
         seen.add((x, y))
 
         for NEW in ((x, y+1), (x, y-1), (x+1, y), (x-1, y)):
             possibilities.append((*NEW, length+1))
-
-
-
-
-
-
-
 
 
 
