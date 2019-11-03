@@ -22,36 +22,23 @@ def spanning_tree_1(N, roads):
 
     Es = sorted(roads,key=third)
     T = []  
-    P = [i for i in range (0,N)]
-    print("P = ",P)
-    print("Es = ",Es)
-   # i = 0
+    P = [i for i in range(N)]
     
     while len(T)<(N-1):
         e = Es[0]
-        print("e = ",e)
         del(Es[0])
     
         if(P[e[0]] != P[e[1]]): # is sont dans des cycles diff
             T.append(e)
             P0 = P[e[0]]
             P1 = P[e[1]]
-      #      del(Es[i])
-            
-            for y in P:
-                if(P[y] == P1):
-                    P[y] = P0 
-            print("P = ",P)
-            
-        else: # ils sont dans le même cycle
-      #      i += 1
+            for i in range(len(P)):
+                if(P[i] == P1):
+                    P[i] = P0 
+                    
+        else:  # sinon ils sont dans le même cycle
             continue
-        
-        print("Es = ",Es)
-        print("T = ",T)
-        
- #   satisfaction= sum([e[2] for e in Es])
-    
+            
     satisfaction = 0
     for x in roads:
         if x not in T:
@@ -69,7 +56,7 @@ if __name__ == "__main__":
 
     # Read Input for the first exercice
     
-    with open('in1.txt', 'r') as fd:
+    with open('in3.txt', 'r') as fd:
         l = fd.readline()
         l = l.rstrip().split(' ')
         
@@ -88,7 +75,7 @@ if __name__ == "__main__":
     print("ans1 =",ans1)
     # Check results for the first exercice
 
-    with open('out1.txt', 'r') as fd:
+    with open('out3.txt', 'r') as fd:
         l_output = fd.readline()
         expected_output = int(l_output)
         
