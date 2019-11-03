@@ -16,12 +16,53 @@ def spanning_tree_1(N, roads):
         
         See homework statement for more details
     """
-
-    satisfaction = 0
     
-    # TO COMPLETE
+    def third(s):
+        return s[2]
 
+    Es = sorted(roads,key=third)
+    T = []  
+    P = [i for i in range (0,N)]
+    print("P = ",P)
+    print("Es = ",Es)
+   # i = 0
+    
+    while len(T)<(N-1):
+        e = Es[0]
+        print("e = ",e)
+        del(Es[0])
+    
+        if(P[e[0]] != P[e[1]]): # is sont dans des cycles diff
+            T.append(e)
+            P0 = P[e[0]]
+            P1 = P[e[1]]
+      #      del(Es[i])
+            
+            for y in P:
+                if(P[y] == P1):
+                    P[y] = P0 
+            print("P = ",P)
+            
+        else: # ils sont dans le même cycle
+      #      i += 1
+            continue
+        
+        print("Es = ",Es)
+        print("T = ",T)
+        
+ #   satisfaction= sum([e[2] for e in Es])
+    
+    satisfaction = 0
+    for x in roads:
+        if x not in T:
+            satisfaction += x[2]
+            
     return satisfaction
+
+
+
+
+
 
     
 if __name__ == "__main__":
@@ -41,9 +82,10 @@ if __name__ == "__main__":
             roads.append(tuple([int(x) for x in l]))
             
     # Compute answer for the first exercice
-     
+    print("n = ",n)
+    print("roads = ",roads)
     ans1 = spanning_tree_1(n, roads)
-     
+    print("ans1 =",ans1)
     # Check results for the first exercice
 
     with open('out1.txt', 'r') as fd:
