@@ -82,8 +82,8 @@ def spanning_tree_2(N, edges):
         See project homework for more details
         """
 
+        edges = sorted(randomize_edges(edges), key=lambda e: e[2])
         min_cut = 0
-
         U = Union_Find(N)
 
         # Nombre d'arrêtes
@@ -125,7 +125,6 @@ def spanning_tree_2(N, edges):
     # TO COMPLETE (apply karger several times)
     # Probability to return the true min cut should be at least 0.9999
 
-    edges = sorted(randomize_edges(edges), key=lambda e: e[2])
     min_cut = karger(N, edges)
 
     prob = 2/(N*(N-1))
@@ -133,7 +132,6 @@ def spanning_tree_2(N, edges):
     trials = math.ceil(math.log(0.0001, 1-prob))
 
     for i in range(trials):
-        edges = sorted(randomize_edges(edges), key=lambda e: e[2])
         min_cut = min(min_cut, karger(N, edges))
 
     return min_cut
