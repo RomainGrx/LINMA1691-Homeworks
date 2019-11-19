@@ -5,60 +5,98 @@
 """
 
 import math
-    
+
 def matching(T, friends, hiding_places):
-    """ 
-    INPUT : 
+    """
+    INPUT :
         - T, the number of seconds
         - friends, a list of tuples (x, y, v) describing the position (x, y) and velocity v
           of each friend
         - hiding_places, a list of tuple (x, y) giving the position (x, y) of each hiding place
     OUTPUT :
         - return the maximal number of friends that can hide from the game master
-        
+
         See homework statement for more details
     """
-    
-    ans = 0
+    def distance(friend, place):
+        dx = place[0] - friend[0]
+        dy = place[1] - friend[1]
+        return math.sqrt(dx*dx + dy*dy)
 
-    # TO COMPLETE
+    def time(friend, place):
+        d = distance(friend, place)
+        velocity = friend[2]
+        return d/velocity
 
-    return ans
+    def accesible_times(T, friends, places):
+        accesible_places = []
+        times = []
+        for friend in friends:
+            friend_accesible_places = []
+            friend_times = []
+            for place in places:
+                friend_times.append(time(friend,place))
+                friend_accesible_places.append(friend_times[-1]<=T)
+            times.append(friend_times)
+            accesible_places.append(friend_accesible_places)
+        return (times, accesible_places)
 
-    
+    def mapper(ifriend):
+        for iplace in range(nplaces):
+            if accesible_places[ifriend][iplace] and not tested[ifriend][iplace]:
+                tested[ifriend][iplace] = True
+                if map_place[iplace]==-1 or finder(map_place[iplace]):
+                    map_place[iplace] = ifriend
+                    return True
+        return False
+
+    ret = 0
+    nfriends = len(friends)
+    nplaces  = len(hiding_places)
+    tested   = [[False]*nplaces]*nfriends
+    map_place= [-1]*nplaces
+    times, accesible_places = accesible_times(T, friends, hiding_places)
+
+    for ifriend in range(nfriends):
+        if mapper(ifriend):
+            ret += 1
+
+    return ret
+
+
 if __name__ == "__main__":
 
     # Read Input
-    
+
     with open('in1.txt', 'r') as fd:
         l = fd.readline()
         l = l.rstrip().split(' ')
-        
+
         n, m, T = int(l[0]), int(l[1]), int(l[2])
-        
+
         friends = []
         for friend in range(n):
             l = fd.readline().rstrip().split()
             friends.append(tuple([float(x) for x in l]))
-       
+
         hiding_places = []
         for hiding_place in range(m):
             l = fd.readline().rstrip().split()
             hiding_places.append(tuple([float(x) for x in l]))
 
-    # Compute answer 
-     
-    ans = matching(T, friends, hiding_places)
-     
-    # Check results 
+    # Compute answer
 
-    with open('out1.txt', 'r') as fd:
-        l_output = fd.readline()
-        expected_output = int(l_output)
-        
-        if expected_output == ans:
-            print("Test sample : Correct")
-        else:
-            print("Test sample : Wrong answer")
-            print("Your output : %d ; Correct answer : %d" % (ans, expected_output)) 
-        
+    ans = matching(T, friends, hiding_places)
+    print(ans)
+
+    # Check results
+
+    # with open('out1.txt', 'r') as fd:
+    #     l_output = fd.readline()
+    #     expected_output = int(l_output)
+    #
+    #     if expected_output == ans:
+    #         print("Test sample : Correct")
+    #     else:
+    #         print("Test sample : Wrong answer")
+    #         print("Your output : %d ; Correct answer : %d" % (ans, expected_output))
