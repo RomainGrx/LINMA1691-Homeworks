@@ -5,6 +5,7 @@
 """
 
 import math
+import ext
 
 def matching(T, friends, hiding_places):
     """
@@ -41,14 +42,6 @@ def matching(T, friends, hiding_places):
             accesible_places.append(friend_accesible_places)
         return (times, accesible_places)
 
-    def mapper(ifriend):
-        for iplace in range(nplaces):
-            if accesible_places[ifriend][iplace] and not tested[ifriend][iplace]:
-                tested[ifriend][iplace] = True
-                if map_place[iplace]==-1 or finder(map_place[iplace]):
-                    map_place[iplace] = ifriend
-                    return True
-        return False
 
     ret = 0
     nfriends = len(friends)
@@ -57,8 +50,18 @@ def matching(T, friends, hiding_places):
     map_place= [-1]*nplaces
     times, accesible_places = accesible_times(T, friends, hiding_places)
 
+    def mapper(ifriend, test):
+        nonlocal nfriends, nplaces, tested, map_place, times, accesible_places
+        for iplace in range(nplaces):
+            if accesible_places[ifriend][iplace] and not test[iplace]:
+                test[iplace] = True
+                if map_place[iplace]==-1 or mapper(map_place[iplace], test):
+                    map_place[iplace] = ifriend
+                    return True
+        return False
+
     for ifriend in range(nfriends):
-        if mapper(ifriend):
+        if mapper(ifriend, tested[ifriend]):
             ret += 1
 
     return ret
@@ -86,17 +89,17 @@ if __name__ == "__main__":
 
     # Compute answer
 
-    ans = matching(T, friends, hiding_places)
+    ans = ext.matching(T, friends, hiding_places)
     print(ans)
 
     # Check results
 
-    # with open('out1.txt', 'r') as fd:
-    #     l_output = fd.readline()
-    #     expected_output = int(l_output)
-    #
-    #     if expected_output == ans:
-    #         print("Test sample : Correct")
-    #     else:
-    #         print("Test sample : Wrong answer")
-    #         print("Your output : %d ; Correct answer : %d" % (ans, expected_output))
+    with open('out1.txt', 'r') as fd:
+        l_output = fd.readline()
+        expected_output = int(l_output)
+
+        if expected_output == ans:
+            print("Test sample : Correct")
+        else:
+            print("Test sample : Wrong answer")
+            print("Your output : %d ; Correct answer : %d" % (ans, expected_output))
