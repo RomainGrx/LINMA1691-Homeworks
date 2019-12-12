@@ -5,7 +5,6 @@
 """
 
 import math
-import ext
 
 def matching(T, friends, hiding_places):
     """
@@ -19,13 +18,14 @@ def matching(T, friends, hiding_places):
 
         See homework statement for more details
     """
-    def distance(friend, place):
-        dx = place[0] - friend[0]
-        dy = place[1] - friend[1]
+
+    def distance(friend, mapper):
+        dx = mapper[0] - friend[0]
+        dy = mapper[1] - friend[1]
         return math.sqrt(dx*dx + dy*dy)
 
-    def time(friend, place):
-        d = distance(friend, place)
+    def time(friend, mapper):
+        d = distance(friend, mapper)
         velocity = friend[2]
         return d/velocity
 
@@ -35,34 +35,58 @@ def matching(T, friends, hiding_places):
         for friend in friends:
             friend_accesible_places = []
             friend_times = []
-            for place in places:
-                friend_times.append(time(friend,place))
+            for mapper in places:
+                friend_times.append(time(friend,mapper))
                 friend_accesible_places.append(friend_times[-1]<=T)
             times.append(friend_times)
             accesible_places.append(friend_accesible_places)
-        return (times, accesible_places)
+        return times, accesible_places
 
+    def mapping(nplaces,acci):
+        mapper = 0
+        still_available = nplaces
+        for iplace in range(nplaces):
+            somme = 0
+            for i in range(len(acci)):
+                somme += acci[i]
+            if(acci[iplace]):
+                if somme>=still_available:
+                    continue
+                else:
+                    mapper = iplace
+                    still_available = somme
+
+        return mapper, still_available
 
     ret = 0
     nfriends = len(friends)
     nplaces  = len(hiding_places)
-    tested   = [[False]*nplaces]*nfriends
-    map_place= [-1]*nplaces
     times, accesible_places = accesible_times(T, friends, hiding_places)
 
-    def mapper(ifriend, test):
-        nonlocal nfriends, nplaces, tested, map_place, times, accesible_places
-        for iplace in range(nplaces):
-            if accesible_places[ifriend][iplace] and not test[iplace]:
-                test[iplace] = True
-                if map_place[iplace]==-1 or mapper(map_place[iplace], test):
-                    map_place[iplace] = ifriend
-                    return True
-        return False
-
-    for ifriend in range(nfriends):
-        if mapper(ifriend, tested[ifriend]):
-            ret += 1
+    available = 1
+    while True:
+        ifriend = 0
+        while True:
+            somme = 0
+            for i in range(len(accesible_places[ifriend])):
+                somme += accesible_places[ifriend][i]
+            if somme is not available:
+                ifriend +=1
+                if(nfriends<= ifriend):
+                    break
+            else:
+                mapper, still_available = mapping(nplaces,accesible_places[ifriend])
+                ret += 1
+                if(nfriends<=0):
+                    break
+                accesible_places[ifriend] = [False]*nplaces
+                for k in range(nfriends):
+                    accesible_places[k][mapper] = False
+                ifriend = 0
+                available = 1
+        available += 1
+        if(available>nplaces):
+            break
 
     return ret
 
@@ -71,7 +95,7 @@ if __name__ == "__main__":
 
     # Read Input
 
-    with open('in1.txt', 'r') as fd:
+    with open('in2.txt', 'r') as fd:
         l = fd.readline()
         l = l.rstrip().split(' ')
 
@@ -89,12 +113,12 @@ if __name__ == "__main__":
 
     # Compute answer
 
-    ans = ext.matching(T, friends, hiding_places)
+    ans = matching(T, friends, hiding_places)
     print(ans)
 
     # Check results
 
-    with open('out1.txt', 'r') as fd:
+    with open('out2.txt', 'r') as fd:
         l_output = fd.readline()
         expected_output = int(l_output)
 
